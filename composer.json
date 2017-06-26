@@ -1,0 +1,26 @@
+{
+    "name": "fritzmg/mwll-parser",
+    "description": "GameData parser for MechWarrior: Living Legends",
+    "type": "library",
+    "license": "LGPL-3.0+",
+    "authors": [
+        {
+            "name": "fritzmg",
+            "email": "fmg@inspiredminds.at"
+        }
+    ],
+    "require": {
+        "ext-simplexml": "*"
+    },
+    "require-dev": {
+        "symfony/var-dumper": "^3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "MWLL\\Parser\\": "src/MWLL/Parser"
+        },
+        "files": [
+            "src/parse_lua.php"
+        ]
+    }
+}

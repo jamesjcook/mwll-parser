@@ -67,6 +67,7 @@ class Variant
 	 *
 	 * @param string $strVehicleName
 	 * @param \SimpleXMLElement $objXml
+	 * @param Variant $objBaseVariant
 	 *
 	 * @return void
 	 */

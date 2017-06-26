@@ -44,6 +44,12 @@ class Variant
 	protected $intTotalPrice;
 
 	/**
+	 * Free tons
+	 * @var array
+	 */
+	protected $intFreeTons = 0;
+
+	/**
 	 * Equipment array
 	 * @var array
 	 */
@@ -65,7 +71,7 @@ class Variant
 	 *
 	 * @return void
 	 */
-	public function __construct($strVehicleName, \SimpleXMLElement $objVariant, \SimpleXMLElement $objComponent, Variant $objBaseVariant = null)
+	public function __construct($strVehicleName, \SimpleXMLElement &$objVariant, \SimpleXMLElement &$objRoot, Variant &$objBaseVariant = null)
 	{
 		// save the name
 		$this->strName = (string)$objVariant['name'];
@@ -76,6 +82,7 @@ class Variant
 			// get the asset's value and name
 			$name = (string)$asset['name'];
 			$value = (string)$asset['value'];
+			$idref = (string)$asset['idRef'];
 
 			// check for value
 			if (!$value)
@@ -89,8 +96,13 @@ class Variant
 				continue;
 			}
 
+			// free tons
+			if ($idref == 'idRemainingTonnage')
+			{
+				$this->intFreeTons = (int)$value;
+			}
 			// equipment
-			if ($name == 'type' || in_array($value,  self::$arrEquipmentAssets))
+			elseif ($name == 'type' || in_array($value,  self::$arrEquipmentAssets))
 			{
 				if (isset($this->arrEquipment[$value]))
 				{
@@ -117,6 +129,30 @@ class Variant
 			elseif ($name == 'damageMax')
 			{
 				$this->intArmor += $value;
+			}
+			// heatsinks
+			elseif ($name == 'heatsinkCount')
+			{
+				$this->arrEquipment['HS'] = (int)$value;
+			}
+		}
+
+		// convert to double heatsinks if applicable
+		if (isset($this->arrEquipment['HS']))
+		{
+			foreach ($objVariant->Elems->Elem as $asset)
+			{
+				// get the asset's value and name
+				$name = (string)$asset['name'];
+				$value = (string)$asset['value'];
+
+				if ($name == 'hasDoubleHeatsinks' && $value == '1')
+				{
+					$count = $this->arrEquipment['HS'];
+					unset($this->arrEquipment['HS']);
+					$this->arrEquipment['DHS'] = $count;
+					break;
+				}
 			}
 		}
 

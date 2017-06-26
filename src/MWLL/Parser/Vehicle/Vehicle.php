@@ -29,7 +29,7 @@ class Vehicle
 	 * Whether this vehicle has XL engines
 	 * @var boolean
 	 */
-	protected $blnHasXL;
+	protected $blnHasXL = false;
 
 
 	/**
@@ -52,6 +52,34 @@ class Vehicle
 
 		// save the name
 		$this->strName = (string)$objXml['name'];
+
+		if ($this->strName == 'IS_Atlas_Mech')
+		{
+			//VarDumper::dump($objXml); exit;
+		}
+
+		// check for XL engine
+		if (isset($objXml->MovementParams[0]->Mech->Components))
+		{
+			foreach ($objXml->MovementParams[0]->Mech->Components->Component as $component)
+			{
+				if ($component['name'] == 'lefttorso')
+				{
+					foreach ($component->ProxyTransferDamages as $damage)
+					{
+						if ($damage['traget'] == 'centertorso')
+						{
+							if ($damage['transferRatio'] > 1.0)
+							{
+								$this->blnHasXL = true;
+							}
+							break;
+						}
+					}
+					break;
+				}
+			}
+		}
 
 		// check for base variant
 		foreach ($objXml->Modifications->Modification as $modification)

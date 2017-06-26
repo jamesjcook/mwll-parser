@@ -8,12 +8,6 @@ use Symfony\Component\VarDumper\VarDumper;
 class Variant
 {
 	/**
-	 * XML object
-	 * @var \SimpleXMLElement
-	 */
-	protected $objXml;
-
-	/**
 	 * Variant name
 	 * @var string
 	 */
@@ -66,21 +60,18 @@ class Variant
 	 * Constructor
 	 *
 	 * @param string $strVehicleName
-	 * @param \SimpleXMLElement $objXml
+	 * @param \SimpleXMLElement $objVariant
 	 * @param Variant $objBaseVariant
 	 *
 	 * @return void
 	 */
-	public function __construct($strVehicleName, \SimpleXMLElement $objXml, Variant $objBaseVariant = null)
+	public function __construct($strVehicleName, \SimpleXMLElement $objVariant, \SimpleXMLElement $objComponent, Variant $objBaseVariant = null)
 	{
-		// save the XML
-		$this->objXml = $objXml;
-
 		// save the name
-		$this->strName = (string)$objXml['name'];
+		$this->strName = (string)$objVariant['name'];
 
 		// go through each asset of the variant
-		foreach ($objXml->Elems->Elem as $asset)
+		foreach ($objVariant->Elems->Elem as $asset)
 		{
 			// get the asset's value and name
 			$name = (string)$asset['name'];

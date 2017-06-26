@@ -8,12 +8,6 @@ use Symfony\Component\VarDumper\VarDumper;
 class Vehicle
 {
 	/**
-	 * XML object
-	 * @var \SimpleXMLElement
-	 */
-	private $objXml;
-
-	/**
 	 * Optional base variant
 	 * @var Variant
 	 */
@@ -42,19 +36,19 @@ class Vehicle
 	public function __construct($strXmlPath)
 	{
 		// load the XML
-		$this->objXml = simplexml_load_file($strXmlPath);
+		$objXml = simplexml_load_file($strXmlPath);
 
 		// check if successful
-		if ($this->objXml === false)
+		if ($objXml === false)
 		{
 			throw new \RuntimeException('Could not load '.$strXmlPath);
 		}
 
 		// save the name
-		$this->strName = (string)$this->objXml['name'];
+		$this->strName = (string)$objXml['name'];
 
 		// check for base variant
-		foreach ($this->objXml->Modifications->Modification as $modification)
+		foreach ($objXml->Modifications->Modification as $modification)
 		{
 			if ('Base' == $modification['name'])
 			{
@@ -64,7 +58,7 @@ class Vehicle
 		}
 
 		// load all variants
-		foreach ($this->objXml->Modifications->Modification as $modification)
+		foreach ($objXml->Modifications->Modification as $modification)
 		{
 			if ('Base' != $modification['name'])
 			{

@@ -11,19 +11,25 @@ class Vehicle
 	 * Optional base variant
 	 * @var Variant
 	 */
-	private $objBaseVariant = null;
+	protected $objBaseVariant = null;
 
 	/**
 	 * All variants
 	 * @var array
 	 */
-	private $arrVariants = array();
+	protected $arrVariants = array();
 
 	/**
 	 * Name of the vehicle
 	 * @var string
 	 */
-	private $strName;
+	protected $strName;
+
+	/**
+	 * Whether this vehicle has XL engines
+	 * @var boolean
+	 */
+	protected $blnHasXL;
 
 
 	/**

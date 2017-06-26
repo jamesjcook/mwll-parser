@@ -2,6 +2,7 @@
 
 namespace MWLL\Parser\Vehicle;
 
+use MWLL\Parser\Prices;
 use Symfony\Component\VarDumper\VarDumper;
 
 class Variant
@@ -10,41 +11,66 @@ class Variant
 	 * XML object
 	 * @var \SimpleXMLElement
 	 */
-	private $objXml;
+	protected $objXml;
 
 	/**
 	 * Variant name
 	 * @var string
 	 */
-	private $strName;
+	protected $strName;
 
 	/**
 	 * Weapons array
 	 * @var array
 	 */
-	private $intArmor = 0;
+	protected $intArmor = 0;
 
 	/**
 	 * Weapons array
 	 * @var array
 	 */
-	private $arrWeapons = array();
+	protected $arrWeapons = array();
 
 	/**
 	 * Equipment array
 	 * @var array
 	 */
-	private $arrEquipment = array();
+	protected $arrEquipment = array();
+
+	/**
+	 * Price
+	 * @var array
+	 */
+	protected $intBasePrice;
+
+	/**
+	 * Price
+	 * @var array
+	 */
+	protected $intTotalPrice;
+
+	/**
+	 * Equipment array
+	 * @var array
+	 */
+	protected static $arrEquipmentAssets = array('EnhancedOptics','AntiMissileSystem');
+
+	/**
+	 * Ignore array
+	 * @var array
+	 */
+	protected static $arrIgnoreAssets = array('StandardOptics');
 
 
 	/**
 	 * Constructor
 	 *
+	 * @param string $strVehicleName
 	 * @param \SimpleXMLElement $objXml
 	 *
 	 * @return void
 	 */
-	public function __construct(\SimpleXMLElement $objXml, Variant $objBaseVariant = null)
+	public function __construct($strVehicleName, \SimpleXMLElement $objXml, Variant $objBaseVariant = null)
 	{
 		// save the XML
 		$this->objXml = $objXml;
@@ -66,13 +92,13 @@ class Variant
 			}
 
 			// ignore some assets
-			if (in_array($value, array('StandardOptics')))
+			if (in_array($value, self::$arrIgnoreAssets))
 			{
 				continue;
 			}
 
 			// equipment
-			if ($name == 'type' || in_array($value, array('EnhancedOptics','StandardOptics')))
+			if ($name == 'type' || in_array($value,  self::$arrEquipmentAssets))
 			{
 				if (isset($this->arrEquipment[$value]))
 				{
@@ -101,5 +127,31 @@ class Variant
 				$this->intArmor += $value;
 			}
 		}
+
+		// get the base price for this variant
+		$this->intBasePrice = Prices::price($strVehicleName, $this->strName);
+
+		// calculate the total price
+		$this->intTotalPrice = $this->intBasePrice;
+		foreach ($this->arrWeapons as $strClass => $count)
+		{
+			$this->intTotalPrice += Prices::price($strClass) * $count;
+		}
+		foreach ($this->arrEquipment as $strClass => $count)
+		{
+			$this->intTotalPrice += Prices::price($strClass);
+		}
+		$this->intTotalPrice += Prices::price('damageMax') * $this->intArmor;
+	}
+
+
+	/**
+	 * Getter for name
+	 *
+	 * @return string
+	 */
+	public function getName()
+	{
+		return $this->strName;
 	}
 }

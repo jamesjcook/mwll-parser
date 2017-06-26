@@ -10,17 +10,12 @@
         }
     ],
     "require": {
-        "ext-simplexml": "*"
-    },
-    "require-dev": {
+        "ext-simplexml": "*",
         "symfony/var-dumper": "^3.0"
     },
     "autoload": {
         "psr-4": {
             "MWLL\\Parser\\": "src/MWLL/Parser"
-        },
-        "files": [
-            "src/parse_lua.php"
-        ]
+        }
     }
 }

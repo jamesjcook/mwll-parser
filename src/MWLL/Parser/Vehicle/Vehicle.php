@@ -3,7 +3,6 @@
 namespace MWLL\Parser\Vehicle;
 
 use MWLL\Parser\Vehicle\Variant;
-
 use Symfony\Component\VarDumper\VarDumper;
 
 class Vehicle
@@ -59,7 +58,7 @@ class Vehicle
 		{
 			if ('Base' == $modification['name'])
 			{
-				$this->objBaseVariant = new Variant($modification);
+				$this->objBaseVariant = new Variant($this->strName, $modification);
 				break;
 			}
 		}
@@ -69,14 +68,15 @@ class Vehicle
 		{
 			if ('Base' != $modification['name'])
 			{
-				$this->arrVariants[] = new Variant($modification, $this->objBaseVariant);
+				$objVariant = new Variant($this->strName, $modification, $this->objBaseVariant);
+				$this->arrVariants[$objVariant->getName()] = $objVariant;
 			}
 		}
 	}
 
 
 	/**
-	 * Getter for variants.
+	 * Getter for variants
 	 *
 	 * @return array
 	 */
@@ -87,7 +87,7 @@ class Vehicle
 
 
 	/**
-	 * Getter for name.
+	 * Getter for name
 	 *
 	 * @return string
 	 */

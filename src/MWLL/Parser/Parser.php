@@ -3,8 +3,6 @@
 namespace MWLL\Parser;
 
 use MWLL\Parser\Vehicle\Vehicle;
-use LUAParser;
-
 use Symfony\Component\VarDumper\VarDumper;
 
 class Parser
@@ -31,23 +29,8 @@ class Parser
 		// define the path to the Scripts\GameRules\MechLists.lua
 		$strMechListsPath = $strGameDataFolder . '/Scripts/GameRules/MechLists.lua';
 
-		// check if file exists
-		if (!file_exists($strMechListsPath))
-		{
-			throw new \RuntimeException($strMechListsPath . ' does not exist.');
-		}
-
-		// parse LUA
-		//$objLuaParser = new LUAParser();
-		//$objLuaParser->parseFile($strMechListsPath);
-		$strLua = file_get_contents($strMechListsPath);
-		$strLua = str_replace('function AddDataLists(gm)', '', $strLua);
-		$strLua = implode("\n", array_slice(explode("\n", $strLua), 0, 1016));
-		$strLua = str_replace('gm.', 'gm_', $strLua);
-		VarDumper::dump(parse_lua($strLua)); exit;
-
-
-		//VarDumper::dump(parse_lua($strLua));
+		// generate the prices instance
+		Prices::init($strMechListsPath);
 
 		// prepare result
 		$arrVehicles = array();
@@ -57,9 +40,13 @@ class Parser
 		{
 			if ($fileInfo->getExtension() == 'xml')
 			{
-				$arrVehicles[] = new Vehicle($fileInfo->getPathname());
+				$objVehicle = new Vehicle($fileInfo->getPathname());
+				$arrVehicles[$objVehicle->getName()] = $objVehicle;
 			}
 		}
+
+		// sort
+		ksort($arrVehicles);
 
 		// return the vehicles
 		return $arrVehicles;

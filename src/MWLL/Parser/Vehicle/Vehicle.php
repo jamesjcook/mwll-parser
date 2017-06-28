@@ -31,6 +31,36 @@ class Vehicle
 	 */
 	protected $blnHasXL = false;
 
+	/**
+	 * Tech
+	 * @var string
+	 */
+	protected $strTech;
+
+	/**
+	 * Tonnage
+	 * @var integer
+	 */
+	protected $intTonnage;
+
+	/**
+	 * Type
+	 * @var string
+	 */
+	protected $strType;
+
+	/**
+	 * Max speed
+	 * @var float
+	 */
+	protected $intMaxSpeed;
+
+	/**
+	 * Vehicle types
+	 * @var array
+	 */
+	protected static $arrVehicleTypes = array('Mech','Tank','Aerospace');
+
 
 	/**
 	 * Constructor for Vehicle.
@@ -53,9 +83,26 @@ class Vehicle
 		// save the name
 		$this->strName = (string)$objXml['name'];
 
-		if ($this->strName == 'IS_Atlas_Mech')
+		// determine the tech
+		$arrName = explode('_', $this->strName);
+		if ($arrName)
 		{
-			//VarDumper::dump($objXml); exit;
+			$this->strTech = $arrName[0];
+		}
+
+		// determine the tonnage and type
+		foreach (self::$arrVehicleTypes as $strType)
+		{
+			if (isset($objXml->MovementParams[0]->{$strType}))
+			{
+				$this->intTonnage = (int)$objXml->MovementParams[0]->{$strType}['tonnage'];
+				$this->strType = $strType;
+				if (isset($objXml->MovementParams[0]->{$strType}['actualMaxSpeed']))
+				{
+					$this->intMaxSpeed = (int)$objXml->MovementParams[0]->{$strType}['actualMaxSpeed'];
+				}
+				break;
+			}
 		}
 
 		// check for XL engine
@@ -67,7 +114,7 @@ class Vehicle
 				{
 					foreach ($component->ProxyTransferDamages as $damage)
 					{
-						if ($damage['traget'] == 'centertorso')
+						if ($damage['target'] == 'centertorso')
 						{
 							if ($damage['transferRatio'] > 1.0)
 							{

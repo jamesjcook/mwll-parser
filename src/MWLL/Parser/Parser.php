@@ -47,7 +47,21 @@ class Parser
 
 		// sort
 		ksort($arrVehicles);
+/*
+		// define path to armor xml
+		$strArmorPath = $strGameDataFolder . '/Scripts/Entities/Vehicles/Implementations/armor.xml';
+		if (file_exists($strArmorPath))
+		{
+			// load the XML
+			$objArmorXml = simplexml_load_file($strArmorPath);
 
+			// check if successful
+			if ($objArmorXml === false)
+			{
+				throw new \RuntimeException('Could not load '.$strArmorPath);
+			}
+		}
+*/
 		// return the vehicles
 		return $arrVehicles;
 	}

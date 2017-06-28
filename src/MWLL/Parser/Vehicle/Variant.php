@@ -179,10 +179,10 @@ class Variant
 
 		/**
 		 * The correlation between armor values and armor tonnage seems broken,
-		 * so I am assuming the armor values of the Atlas Prime equal to a tonnage
-		 * of 18.5, which results in this factor. Also I am rounding to half integers.
+		 * so I am assuming the armor values of the Owens equal to a tonnage
+		 * of 7, which results in this factor. Also I am rounding to half integers.
 		 */
-		$this->floatArmorTonnage = round($this->intArmor * 0.0002034755829300484 * 2) * 0.5;
+		$this->floatArmorTonnage = round($this->intArmor * 0.0002054171435278927 * 2) * 0.5;
 	}
 
 

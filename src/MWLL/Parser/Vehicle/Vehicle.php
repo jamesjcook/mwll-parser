@@ -53,7 +53,7 @@ class Vehicle
 	 * Max speed
 	 * @var float
 	 */
-	protected $intMaxSpeed;
+	protected $floatSpeed;
 
 	/**
 	 * Vehicle types
@@ -97,9 +97,15 @@ class Vehicle
 			{
 				$this->intTonnage = (int)$objXml->MovementParams[0]->{$strType}['tonnage'];
 				$this->strType = $strType;
+				if (isset($objXml->MovementParams[0]->{$strType}['maxSpeed']))
+				{
+					// factor suggested by invictus
+					$this->floatSpeed = floatval($objXml->MovementParams[0]->{$strType}['maxSpeed']) * 3.56;
+				}
 				if (isset($objXml->MovementParams[0]->{$strType}['actualMaxSpeed']))
 				{
-					$this->intMaxSpeed = (int)$objXml->MovementParams[0]->{$strType}['actualMaxSpeed'];
+					// this is the observed in-game speed
+					$this->floatSpeed = floatval($objXml->MovementParams[0]->{$strType}['actualMaxSpeed']);
 				}
 				break;
 			}
@@ -110,11 +116,11 @@ class Vehicle
 		{
 			foreach ($objXml->MovementParams[0]->Mech->Components->Component as $component)
 			{
-				if ($component['name'] == 'lefttorso')
+				if ((string)$component['name'] == 'lefttorso')
 				{
 					foreach ($component->ProxyTransferDamages as $damage)
 					{
-						if ($damage['target'] == 'centertorso')
+						if ((string)$damage['target'] == 'centertorso')
 						{
 							if ($damage['transferRatio'] > 1.0)
 							{
@@ -169,5 +175,68 @@ class Vehicle
 	public function getName()
 	{
 		return $this->strName;
+	}
+
+	/** 
+	 * @return string
+	 */
+	public function getCommonName()
+	{
+		$arrName = explode('_',$this->strName);
+		if (count($arrName) > 1)
+		{
+			return $arrName[1];
+		}
+		else
+		{
+			return $this->strName;
+		}
+	}
+
+	/**
+	 * @return float
+	 */
+	public function getSpeed()
+	{
+		return $this->floatSpeed;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getTech()
+	{
+		return $this->strTech;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getClass()
+	{
+		if ($this->intTonnage > 75 && $this->strType != 'Aerospace')
+		{
+			return 'Assault';
+		}
+		elseif ($this->intTonnage > 55)
+		{
+			return 'Heavy';
+		}
+		elseif ($this->intTonnage > 35)
+		{
+			return 'Medium';
+		}
+		else
+		{
+			return 'Light';
+		}
+	}
+
+	/**
+	 * @return integer
+	 */
+	public function getTonnage()
+	{
+		return $this->intTonnage;
 	}
 }

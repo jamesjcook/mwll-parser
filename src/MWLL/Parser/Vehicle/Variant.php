@@ -14,6 +14,12 @@ class Variant
 	protected $strName;
 
 	/**
+	 * Variant name for buy menu
+	 * @var string
+	 */
+	protected $strUiName;
+
+	/**
 	 * Armor
 	 * @var integer
 	 */
@@ -65,7 +71,7 @@ class Variant
 	 * Ignore array
 	 * @var array
 	 */
-	protected static $arrIgnoreAssets = array('StandardOptics');
+	protected static $arrIgnoreAssets = array('StandardOptics','LongRangeRadar','Radar');
 
 
 	/**
@@ -183,16 +189,57 @@ class Variant
 		 * of 7, which results in this factor. Also I am rounding to half integers.
 		 */
 		$this->floatArmorTonnage = round($this->intArmor * 0.0002054171435278927 * 2) * 0.5;
+
+		// set the UI name for the buy menu
+		$this->strUiName = 'mp_Tut'. str_replace('_Mech', '', $strVehicleName) . $this->strName;
 	}
 
 
 	/**
-	 * Getter for name
-	 *
 	 * @return string
 	 */
 	public function getName()
 	{
 		return $this->strName;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getUiName()
+	{
+		return $this->strUiName;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getWeapons()
+	{
+		return $this->arrWeapons;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getEquipment()
+	{
+		return $this->arrEquipment;
+	}
+
+	/**
+	 * @return float
+	 */
+	public function getArmorTonnage()
+	{
+		return $this->floatArmorTonnage;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function hasMasc()
+	{
+		return in_array('MASC', array_keys($this->arrEquipment));
 	}
 }

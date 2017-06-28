@@ -14,10 +14,16 @@ class Variant
 	protected $strName;
 
 	/**
-	 * Weapons array
-	 * @var array
+	 * Armor
+	 * @var integer
 	 */
 	protected $intArmor = 0;
+
+	/**
+     * Armor tonnage
+     * @var float
+     */
+	protected $floatArmorTonnage;
 
 	/**
 	 * Weapons array
@@ -170,6 +176,13 @@ class Variant
 			$this->intTotalPrice += Prices::price($strClass);
 		}
 		$this->intTotalPrice += Prices::price('damageMax') * $this->intArmor;
+
+		/**
+		 * The correlation between armor values and armor tonnage seems broken,
+		 * so I am assuming the armor values of the Atlas Prime equal to a tonnage
+		 * of 18.5, which results in this factor. Also I am rounding to half integers.
+		 */
+		$this->floatArmorTonnage = round($this->intArmor * 0.0002034755829300484 * 2) * 0.5;
 	}
 
 

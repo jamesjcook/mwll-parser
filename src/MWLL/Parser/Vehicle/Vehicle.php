@@ -134,7 +134,7 @@ class Vehicle
 		{
 			if ('Base' == $modification['name'])
 			{
-				$this->objBaseVariant = new Variant($this->strName, $modification, $objXml);
+				$this->objBaseVariant = new Variant($this, $modification, $objXml);
 				break;
 			}
 		}
@@ -144,7 +144,7 @@ class Vehicle
 		{
 			if ('Base' != $modification['name'])
 			{
-				$objVariant = new Variant($this->strName, $modification, $objXml, $this->objBaseVariant);
+				$objVariant = new Variant($this, $modification, $objXml, $this->objBaseVariant);
 				$this->arrVariants[$objVariant->getName()] = $objVariant;
 			}
 		}

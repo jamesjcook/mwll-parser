@@ -4,6 +4,7 @@ namespace MWLL\Parser\Vehicle;
 
 use MWLL\Parser\Prices;
 use MWLL\Parser\Parser;
+use MWLL\Parser\Vehicle\Vehicle;
 use Symfony\Component\VarDumper\VarDumper;
 
 class Variant
@@ -78,7 +79,7 @@ class Variant
 	 *
 	 * @return void
 	 */
-	public function __construct($strVehicleName, \SimpleXMLElement &$objVariant, \SimpleXMLElement &$objRoot, Variant &$objBaseVariant = null)
+	public function __construct(Vehicle $objVehicle, \SimpleXMLElement &$objVariant, \SimpleXMLElement &$objRoot, Variant &$objBaseVariant = null)
 	{
 		// save the name
 		$this->strName = (string)$objVariant['name'];
@@ -164,7 +165,7 @@ class Variant
 		}
 
 		// get the base price for this variant
-		$this->intBasePrice = Prices::price($strVehicleName, $this->strName);
+		$this->intBasePrice = Prices::price($objVehicle->getName(), $this->strName);
 
 		// calculate the total price
 		$this->intTotalPrice = $this->intBasePrice;
@@ -184,6 +185,17 @@ class Variant
 		 * of 7, which results in this factor. Also I am rounding to half integers.
 		 */
 		$this->floatArmorTonnage = round($this->intArmor * 0.0002054171435278927 * 2) * 0.5;
+
+		if ($objVehicle->getType() == 'Tank' || $objVehicle->getType() == 'Wheeled')
+		{
+			// here the Demolisher Prime is assumed with 11.5t of armor
+			$this->floatArmorTonnage = round($this->intArmor * 0.0002379966887417219 * 2) * 0.5;
+		}
+		elseif ($objVehicle->getType() == 'Aerospace')
+		{
+			// here the Sparrow Hawk Prime is assumed with 6t of armor
+			$this->floatArmorTonnage = round($this->intArmor * 0.0004285714285714286 * 2) * 0.5;	
+		}
 	}
 
 

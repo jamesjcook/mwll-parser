@@ -3,6 +3,7 @@
 namespace MWLL\Parser\Vehicle;
 
 use MWLL\Parser\Vehicle\Variant;
+use MWLL\Parser\Parser;
 use Symfony\Component\VarDumper\VarDumper;
 
 class Vehicle
@@ -55,12 +56,6 @@ class Vehicle
 	 */
 	protected $floatSpeed;
 
-	/**
-	 * Vehicle types
-	 * @var array
-	 */
-	protected static $arrVehicleTypes = array('Mech','Tank','Aerospace');
-
 
 	/**
 	 * Constructor for Vehicle.
@@ -91,7 +86,7 @@ class Vehicle
 		}
 
 		// determine the tonnage and type
-		foreach (self::$arrVehicleTypes as $strType)
+		foreach (Parser::getVehicleTypes() as $strType)
 		{
 			if (isset($objXml->MovementParams[0]->{$strType}))
 			{
@@ -202,6 +197,14 @@ class Vehicle
 	}
 
 	/**
+	 * @return float
+	 */
+	public function getMascSpeed()
+	{
+		return $this->floatSpeed * 1.4;
+	}
+
+	/**
 	 * @return string
 	 */
 	public function getTech()
@@ -230,6 +233,14 @@ class Vehicle
 		{
 			return 'Light';
 		}
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getType()
+	{
+		return $this->strType;
 	}
 
 	/**

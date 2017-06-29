@@ -3,6 +3,7 @@
 namespace MWLL\Parser\Vehicle;
 
 use MWLL\Parser\Prices;
+use MWLL\Parser\Parser;
 use Symfony\Component\VarDumper\VarDumper;
 
 class Variant
@@ -225,6 +226,23 @@ class Variant
 	public function getEquipment()
 	{
 		return $this->arrEquipment;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getEquipmentFor($strCategory)
+	{
+		$arrEquipment = array();
+		$arrEquipmentMapping = Parser::getEquipmentMapping();
+		foreach ($this->arrEquipment as $equipment => $count)
+		{
+			if ($arrEquipmentMapping[$equipment] == $strCategory)
+			{
+				$arrEquipment[$equipment] = $count;
+			}
+		}
+		return $arrEquipment;
 	}
 
 	/**

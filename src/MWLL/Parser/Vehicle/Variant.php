@@ -22,9 +22,9 @@ class Variant
 	protected $intArmor = 0;
 
 	/**
-     * Armor tonnage
-     * @var float
-     */
+	 * Armor tonnage
+	 * @var float
+	 */
 	protected $floatArmorTonnage;
 
 	/**
@@ -164,6 +164,10 @@ class Variant
 			}
 		}
 
+		// sort
+		ksort($this->arrWeapons);
+		ksort($this->arrEquipment);
+
 		// get the base price for this variant
 		$this->intBasePrice = Prices::price($objVehicle->getName(), $this->strName);
 
@@ -179,24 +183,26 @@ class Variant
 		}
 		$this->intTotalPrice += Prices::price('damageMax') * $this->intArmor;
 
-		// calculate armor tonnage
+		/**
+		 * Calculate armor tonnage
+		 *
+		 * The correlation between armor values and armor tonnage seems broken,
+		 * so I am assuming the armor values of certain assets being a certain
+		 * tonnage, which results in these factors. Also I am rounding to half integers.
+		 */
 		if ($objVehicle->getType() == 'Tank' || $objVehicle->getType() == 'Wheeled')
 		{
-			// here the Demolisher Prime is assumed with 11.5t of armor
+			// here the Demolisher Prime is assumed to have 11.5t of armor
 			$this->floatArmorTonnage = round($this->intArmor * 0.0002379966887417219 * 2) * 0.5;
 		}
 		elseif ($objVehicle->getType() == 'Aerospace')
 		{
-			// here the Sparrow Hawk Prime is assumed with 6t of armor
+			// here the Sparrow Hawk Prime is assumed to have 6t of armor
 			$this->floatArmorTonnage = round($this->intArmor * 0.0004285714285714286 * 2) * 0.5;	
 		}
 		else
 		{
-			/**
-			 * The correlation between armor values and armor tonnage seems broken,
-			 * so I am assuming the armor values of the Owens equal to a tonnage
-			 * of 7, which results in this factor. Also I am rounding to half integers.
-			 */
+			// here the Owens Prime is assumed to have 7t of armor
 			$this->floatArmorTonnage = round($this->intArmor * 0.0002054171435278927 * 2) * 0.5;
 		}
 	}
@@ -219,28 +225,26 @@ class Variant
 	}
 
 	/**
+	 * Returns the equipment of the variant.
+	 *
+	 * @param array $arrFilter Optional list of equipments to filter
+	 * @param boolean $blnInverse Inverse the filter logic
+	 *
 	 * @return array
 	 */
-	public function getEquipment()
+	public function getEquipment($arrFilter = null, $blnInverse = false)
 	{
-		return $this->arrEquipment;
-	}
-
-	/**
-	 * @return array
-	 */
-	public function getEquipmentFor($strCategory)
-	{
-		$arrEquipment = array();
-		$arrEquipmentMapping = Parser::getEquipmentMapping();
-		foreach ($this->arrEquipment as $equipment => $count)
+		if ($arrFilter)
 		{
-			if ($arrEquipmentMapping[$equipment] == $strCategory)
+			if ($blnInverse)
 			{
-				$arrEquipment[$equipment] = $count;
+				return array_diff_key($this->arrEquipment, array_flip($arrFilter));
 			}
+
+			return array_intersect_key($this->arrEquipment, array_flip($arrFilter));
 		}
-		return $arrEquipment;
+
+		return $this->arrEquipment;
 	}
 
 	/**

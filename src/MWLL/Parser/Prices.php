@@ -125,11 +125,6 @@ class Prices
 			return $this->arrPrices[$key];
 		}
 
-		if ('ALL_Apc' == $class)
-		{
-			$modification = null;
-		}
-
 		// check if class exists at all
 		if (strpos($this->strContent, '"'.$class.'"') === false)
 		{

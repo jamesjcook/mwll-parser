@@ -10,7 +10,9 @@
         }
     ],
     "require": {
-        "ext-simplexml": "*",
+        "ext-simplexml": "*"
+    },
+    "require-dev": {
         "symfony/var-dumper": "^3.0"
     },
     "autoload": {

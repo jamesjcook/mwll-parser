@@ -163,16 +163,25 @@ class Vehicle
 
 
 	/**
-	 * Getter for name
+	 * Returns internal identifier, e.g. IS_Atlas_Mech
+	 *
+	 * @param boolean $blnNormalize Whether to "normalize" the name, i.e. remove '_Mech'
 	 *
 	 * @return string
 	 */
-	public function getName()
+	public function getName($blnNormalize = false)
 	{
+		if ($blnNormalize)
+		{
+			return $this->getNormalizedName();
+		}
+
 		return $this->strName;
 	}
 
 	/** 
+	 * Returns the name part of the identifier, e.g. Atlas
+	 *
 	 * @return string
 	 */
 	public function getCommonName()
@@ -186,6 +195,16 @@ class Vehicle
 		{
 			return $this->strName;
 		}
+	}
+
+	/**
+	 * Returns the name without '_Mech'
+	 *
+	 * @return string
+	 */
+	public function getNormalizedName()
+	{
+		return str_replace('_Mech', '', $this->strName);
 	}
 
 	/**
@@ -217,7 +236,26 @@ class Vehicle
 	 */
 	public function getClass()
 	{
-		if ($this->intTonnage > 75 && $this->strType != 'Aerospace')
+		/**
+		 * These would be correct, but not used in MWLL.
+		if ($this->strType == 'Aerospace')
+		{
+			if ($this->intTonnage > 70)
+			{
+				return 'Heavy';
+			}
+			elseif ($this->intTonnage > 45)
+			{
+				return 'Medium';
+			}
+			else
+			{
+				return 'Light';
+			}
+		}
+		 */
+
+		if ($this->intTonnage > 75)
 		{
 			return 'Assault';
 		}

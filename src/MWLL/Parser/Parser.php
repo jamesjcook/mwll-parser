@@ -3,6 +3,8 @@
 namespace MWLL\Parser;
 
 use MWLL\Parser\Vehicle\Vehicle;
+use MWLL\Parser\Weapon\Weapon;
+use MWLL\Parser\Equipment\Equipment;
 use Symfony\Component\VarDumper\VarDumper;
 
 class Parser
@@ -81,6 +83,55 @@ class Parser
 		{
 			throw new \RuntimeException('Folder '. $strWeaponFolder . ' does not exist.');
 		}
+
+		// clear
+		self::$arrWeapons = array();
+
+		// go through each XML
+		foreach (new \DirectoryIterator($strWeaponFolder) as $fileInfo)
+		{
+			if ($fileInfo->getExtension() == 'xml')
+			{
+				$objWeapon = new Weapon($fileInfo->getPathname());
+				self::$arrWeapons[$objWeapon->getName()] = $objWeapon;
+			}
+		}
+
+		// sort
+		ksort(self::$arrWeapons);
+
+		// define the folder to the equipment XMLs
+		$strEquipmentFolder = $strGameDataFolder . '/Scripts/Entities/Items/XML/Equipment';
+
+		// check if folder exists
+		if (!file_exists($strEquipmentFolder))
+		{
+			throw new \RuntimeException('Folder '. $strEquipmentFolder . ' does not exist.');
+		}
+/*
+		// clear
+		self::$arrEquipment = array();
+
+		// go through each XML
+		foreach (new \DirectoryIterator($strEquipmentFolder) as $fileInfo)
+		{
+			if ($fileInfo->getExtension() == 'xml')
+			{
+				//$objEquipment = new Weapon($fileInfo->getPathname());
+				//self::$arrEquipment[$objEquipment->getName()] = $objEquipment;
+			}
+			elseif ($fileInfo->isDir() && ($fileInfo->getFilename() == 'MASC' || $fileInfo->getFilename() == 'JumpJets')
+			{
+				foreach (new \DirectoryIterator($fileInfo->getPathname()) as $subFileInfo)
+				{
+					$objEquipment = new Equipment($fileInfo->getPathname());
+					self::$arrEquipment[$objEquipment->getName()] = $objEquipment;
+				}
+			}
+		}
+
+		// sort
+		ksort(self::$arrEquipment);*/
 	}
 
 

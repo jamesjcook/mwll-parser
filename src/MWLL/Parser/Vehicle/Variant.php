@@ -64,6 +64,12 @@ class Variant
 	protected $floatSpeed;
 
 	/**
+	 * Nickname
+	 * @var string
+	 */
+	protected $strNickname;
+
+	/**
 	 * Equipment array
 	 * @var array
 	 */
@@ -87,8 +93,23 @@ class Variant
 	 */
 	public function __construct(Vehicle $objVehicle, \SimpleXMLElement &$objVariant, \SimpleXMLElement &$objRoot, Variant &$objBaseVariant = null)
 	{
+		// need name
+		if (!isset($objVariant['name']))
+		{
+			throw new \RuntimeException('Variant for '.$objVehicle->getName().' has no name!');
+		}
+
 		// save the name
 		$this->strName = (string)$objVariant['name'];
+
+		// save the nickname
+		if (isset($objVariant['nickName']))
+		{
+			$this->strNickname = (string)$objVariant['nickName'];
+		}
+
+		// inherit speed
+		$this->floatSpeed = $objVehicle->getSpeed();
 
 		// go through each asset of the variant
 		foreach ($objVariant->Elems->Elem as $asset)
@@ -152,7 +173,7 @@ class Variant
 			// speed
 			elseif ($name == 'actualMaxSpeed')
 			{
-				$this->floatSpeed = (float)$value;
+				$this->floatSpeed = (float)$value * 3.6;
 			}
 		}
 
@@ -279,7 +300,7 @@ class Variant
 	 */
 	public function getSpeed()
 	{
-		return $this->floatSpeed ?: $this->objVehicle->getSpeed();
+		return $this->floatSpeed;
 	}
 
 	/**
@@ -288,5 +309,21 @@ class Variant
 	public function getMascSpeed()
 	{
 		return $this->getSpeed() * 1.4;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function hasNickname()
+	{
+		return (bool)$this->strNickname;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getNickname()
+	{
+		return $this->strNickname;
 	}
 }

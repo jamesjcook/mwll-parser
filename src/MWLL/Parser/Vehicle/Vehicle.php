@@ -118,7 +118,13 @@ class Vehicle
 		// get the weight class
 		if (isset($objXml['weightClass']))
 		{
-			$this->strClass = (string)$objXml['weightClass'];
+			$this->strWeightClass = (string)$objXml['weightClass'];
+		}
+
+		// get the vehicle class
+		if (isset($objXml['vehicleClass']))
+		{
+			$this->strVehicleClass = (string)$objXml['vehicleClass'];
 		}
 
 		// determine the tonnage and type
@@ -135,16 +141,14 @@ class Vehicle
 				// type
 				$this->strType = $strType;
 
-				// speed
+				// speed (convert from m/s to kph)
 				if (isset($objXml->MovementParams[0]->{$strType}['maxSpeed']))
 				{
-					// factor suggested by invictus
-					$this->floatSpeed = floatval($objXml->MovementParams[0]->{$strType}['maxSpeed']) * 3.56;
+					$this->floatSpeed = floatval($objXml->MovementParams[0]->{$strType}['maxSpeed']) * 3.6;
 				}
 				if (isset($objXml->MovementParams[0]->{$strType}['actualMaxSpeed']))
 				{
-					// this is the observed in-game speed
-					$this->floatSpeed = floatval($objXml->MovementParams[0]->{$strType}['actualMaxSpeed']);
+					$this->floatSpeed = floatval($objXml->MovementParams[0]->{$strType}['actualMaxSpeed']) * 3.6;
 				}
 
 				break;

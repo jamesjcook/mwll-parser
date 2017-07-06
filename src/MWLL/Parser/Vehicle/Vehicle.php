@@ -56,6 +56,18 @@ class Vehicle
 	 */
 	protected $floatSpeed;
 
+	/**
+	 * Weight class
+	 * @var string
+	 */
+	protected $strWeightClass;
+
+	/**
+	 * Vehicle class
+	 * @var string
+	 */
+	protected $strVehicleClass;
+
 
 	/**
 	 * Constructor for Vehicle.
@@ -76,13 +88,37 @@ class Vehicle
 		}
 
 		// save the name
-		$this->strName = (string)$objXml['name'];
+		if (isset($objXml['name']))
+		{
+			$this->strName = (string)$objXml['name'];
+		}
+
+		// save the tech
+		if (isset($objXml['tech']))
+		{
+			$this->strTech = (string)$objXml['tech'];
+		}
 
 		// determine the tech
-		$arrName = explode('_', $this->strName);
-		if ($arrName)
+		if (!$this->strTech)
 		{
-			$this->strTech = $arrName[0];
+			$arrName = explode('_', $this->strName);
+			if ($arrName)
+			{
+				$this->strTech = $arrName[0];
+			}
+		}
+
+		// get the tonnage
+		if (isset($objXml['tonnage']))
+		{
+			$this->intTonnage = (int)$objXml['tonnage'];
+		}
+
+		// get the weight class
+		if (isset($objXml['weightClass']))
+		{
+			$this->strClass = (string)$objXml['weightClass'];
 		}
 
 		// determine the tonnage and type
@@ -90,8 +126,16 @@ class Vehicle
 		{
 			if (isset($objXml->MovementParams[0]->{$strType}))
 			{
-				$this->intTonnage = (int)$objXml->MovementParams[0]->{$strType}['tonnage'];
+				// tonnage
+				if (!$this->intTonnage && isset($objXml->MovementParams[0]->{$strType}['tonnage']))
+				{
+					$this->intTonnage = (int)$objXml->MovementParams[0]->{$strType}['tonnage'];
+				}
+
+				// type
 				$this->strType = $strType;
+
+				// speed
 				if (isset($objXml->MovementParams[0]->{$strType}['maxSpeed']))
 				{
 					// factor suggested by invictus
@@ -102,6 +146,7 @@ class Vehicle
 					// this is the observed in-game speed
 					$this->floatSpeed = floatval($objXml->MovementParams[0]->{$strType}['actualMaxSpeed']);
 				}
+
 				break;
 			}
 		}
@@ -234,10 +279,13 @@ class Vehicle
 	/**
 	 * @return string
 	 */
-	public function getClass()
+	public function getWeightClass()
 	{
-		/**
-		 * These would be correct, but not used in MWLL.
+		if ($this->strWeightClass)
+		{
+			return $this->strWeightClass;
+		}
+
 		if ($this->strType == 'Aerospace')
 		{
 			if ($this->intTonnage > 70)
@@ -253,7 +301,6 @@ class Vehicle
 				return 'Light';
 			}
 		}
-		 */
 
 		if ($this->intTonnage > 75)
 		{
@@ -271,6 +318,19 @@ class Vehicle
 		{
 			return 'Light';
 		}
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getVehicleClass()
+	{
+		if ($this->strVehicleClass)
+		{
+			return $this->strVehicleClass;
+		}
+
+		return $this->getType();
 	}
 
 	/**

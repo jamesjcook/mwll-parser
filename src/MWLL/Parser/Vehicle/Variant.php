@@ -58,6 +58,12 @@ class Variant
 	protected $intFreeTons = 0;
 
 	/**
+	 * Max speed
+	 * @var float
+	 */
+	protected $floatSpeed;
+
+	/**
 	 * Equipment array
 	 * @var array
 	 */
@@ -142,6 +148,11 @@ class Variant
 			elseif ($name == 'heatsinkCount')
 			{
 				$this->arrEquipment['HS'] = (int)$value;
+			}
+			// speed
+			elseif ($name == 'actualMaxSpeed')
+			{
+				$this->floatSpeed = (float)$value;
 			}
 		}
 
@@ -261,5 +272,21 @@ class Variant
 	public function hasMasc()
 	{
 		return in_array('MASC', array_keys($this->arrEquipment));
+	}
+
+	/**
+	 * @return float
+	 */
+	public function getSpeed()
+	{
+		return $this->floatSpeed ?: $this->objVehicle->getSpeed();
+	}
+
+	/**
+	 * @return float
+	 */
+	public function getMascSpeed()
+	{
+		return $this->getSpeed() * 1.4;
 	}
 }

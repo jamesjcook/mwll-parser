@@ -13,6 +13,24 @@ class Parser
 	 */
 	protected static $arrVehicleTypes = array('Mech','Tank','Aerospace','STOVL','LightVTOL','Hovercraft','StdWheeled');
 
+	/**
+	 * Vehicles
+	 * @var array
+	 */
+	protected static $arrVehicles = array();
+
+	/**
+	 * Weapons
+	 * @var array
+	 */
+	protected static $arrWeapons = array();
+
+	/**
+	 * Equipment
+	 * @var array
+	 */
+	protected static $arrEquipment = array();
+
 
 	/**
 	 * Parses the extracted GameData folder
@@ -22,8 +40,14 @@ class Parser
 	 *
 	 * @return array An array of MWLL\Parser\Vehicle objects
 	 */
-	public static function parseVehicles($strGameDataFolder)
+	public static function parse($strGameDataFolder)
 	{
+		// define the path to the Scripts\GameRules\MechLists.lua
+		$strMechListsPath = $strGameDataFolder . '/Scripts/GameRules/MechLists.lua';
+
+		// generate the prices instance
+		Prices::init($strMechListsPath);
+
 		// define the folder to the vehicle XMLs
 		$strVehicleFolder = $strGameDataFolder . '/Scripts/Entities/Vehicles/Implementations/Xml';
 
@@ -33,14 +57,8 @@ class Parser
 			throw new \RuntimeException('Folder '. $strVehicleFolder . ' does not exist.');
 		}
 
-		// define the path to the Scripts\GameRules\MechLists.lua
-		$strMechListsPath = $strGameDataFolder . '/Scripts/GameRules/MechLists.lua';
-
-		// generate the prices instance
-		Prices::init($strMechListsPath);
-
-		// prepare result
-		$arrVehicles = array();
+		// clear
+		self::$arrVehicles = array();
 
 		// go through each XML
 		foreach (new \DirectoryIterator($strVehicleFolder) as $fileInfo)
@@ -48,15 +66,21 @@ class Parser
 			if ($fileInfo->getExtension() == 'xml')
 			{
 				$objVehicle = new Vehicle($fileInfo->getPathname());
-				$arrVehicles[$objVehicle->getName()] = $objVehicle;
+				self::$arrVehicles[$objVehicle->getName()] = $objVehicle;
 			}
 		}
 
 		// sort
-		ksort($arrVehicles);
+		ksort(self::$arrVehicles);
 
-		// return the vehicles
-		return $arrVehicles;
+		// define the folder to the weapon XMLs
+		$strWeaponFolder = $strGameDataFolder . '/Scripts/Entities/Items/XML/Weapons/Vehicles';
+
+		// check if folder exists
+		if (!file_exists($strWeaponFolder))
+		{
+			throw new \RuntimeException('Folder '. $strWeaponFolder . ' does not exist.');
+		}
 	}
 
 
@@ -72,12 +96,34 @@ class Parser
 
 
 	/**
-	 * Returns the equipment mapping
+	 * Returns all parsed vehicles
 	 *
 	 * @return array
 	 */
-	public static function getEquipmentMapping()
+	public static function getVehicles()
 	{
-		return self::$arrEquipmentMapping;
+		return self::$arrVehicles;
+	}
+
+
+	/**
+	 * Returns all parsed weapons
+	 *
+	 * @return array
+	 */
+	public static function getWeapons()
+	{
+		return self::$arrWeapons;
+	}
+
+
+	/**
+	 * Returns all parsed equipment
+	 *
+	 * @return array
+	 */
+	public static function getEquipment()
+	{
+		return self::$arrEquipment;
 	}
 }

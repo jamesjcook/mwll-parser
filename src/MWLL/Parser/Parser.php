@@ -16,6 +16,12 @@ class Parser
 	protected static $arrVehicleTypes = array('Mech','Tank','Aerospace','STOVL','LightVTOL','Hovercraft','StdWheeled');
 
 	/**
+	 * Vehicle types
+	 * @var array
+	 */
+	protected static $arrIgnoreVehicles = array('IS_Karnov');
+
+	/**
 	 * Vehicles
 	 * @var array
 	 */
@@ -26,12 +32,6 @@ class Parser
 	 * @var array
 	 */
 	protected static $arrWeapons = array();
-
-	/**
-	 * Equipment
-	 * @var array
-	 */
-	protected static $arrEquipment = array();
 
 
 	/**
@@ -68,7 +68,10 @@ class Parser
 			if ($fileInfo->getExtension() == 'xml')
 			{
 				$objVehicle = new Vehicle($fileInfo->getPathname());
-				self::$arrVehicles[$objVehicle->getName()] = $objVehicle;
+				if (!in_array($objVehicle->getName(), self::$arrIgnoreVehicles))
+				{		
+					self::$arrVehicles[$objVehicle->getName()] = $objVehicle;
+				}
 			}
 		}
 
@@ -99,39 +102,6 @@ class Parser
 
 		// sort
 		ksort(self::$arrWeapons);
-
-		// define the folder to the equipment XMLs
-		$strEquipmentFolder = $strGameDataFolder . '/Scripts/Entities/Items/XML/Equipment';
-
-		// check if folder exists
-		if (!file_exists($strEquipmentFolder))
-		{
-			throw new \RuntimeException('Folder '. $strEquipmentFolder . ' does not exist.');
-		}
-/*
-		// clear
-		self::$arrEquipment = array();
-
-		// go through each XML
-		foreach (new \DirectoryIterator($strEquipmentFolder) as $fileInfo)
-		{
-			if ($fileInfo->getExtension() == 'xml')
-			{
-				//$objEquipment = new Weapon($fileInfo->getPathname());
-				//self::$arrEquipment[$objEquipment->getName()] = $objEquipment;
-			}
-			elseif ($fileInfo->isDir() && ($fileInfo->getFilename() == 'MASC' || $fileInfo->getFilename() == 'JumpJets')
-			{
-				foreach (new \DirectoryIterator($fileInfo->getPathname()) as $subFileInfo)
-				{
-					$objEquipment = new Equipment($fileInfo->getPathname());
-					self::$arrEquipment[$objEquipment->getName()] = $objEquipment;
-				}
-			}
-		}
-
-		// sort
-		ksort(self::$arrEquipment);*/
 	}
 
 
@@ -165,16 +135,5 @@ class Parser
 	public static function getWeapons()
 	{
 		return self::$arrWeapons;
-	}
-
-
-	/**
-	 * Returns all parsed equipment
-	 *
-	 * @return array
-	 */
-	public static function getEquipment()
-	{
-		return self::$arrEquipment;
 	}
 }

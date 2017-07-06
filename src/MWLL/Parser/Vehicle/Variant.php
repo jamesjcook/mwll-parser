@@ -175,6 +175,10 @@ class Variant
 			{
 				$this->floatSpeed = (float)$value * 3.6;
 			}
+			elseif ($name == 'maxSpeed')
+			{
+				$this->floatSpeed = (float)$value * 3.6;
+			}
 		}
 
 		// convert to double heatsinks if applicable
@@ -222,7 +226,7 @@ class Variant
 		 * so I am assuming the armor values of certain assets being a certain
 		 * tonnage, which results in these factors. Also I am rounding to half integers.
 		 */
-		if ($objVehicle->getType() == 'Tank' || $objVehicle->getType() == 'Wheeled')
+		if ($objVehicle->getType() == 'Tank' || $objVehicle->getType() == 'StdWheeled')
 		{
 			// here the Demolisher Prime is assumed to have 11.5t of armor
 			$this->floatArmorTonnage = round($this->intArmor * 0.0002379966887417219 * 2) * 0.5;
@@ -231,6 +235,16 @@ class Variant
 		{
 			// here the Sparrow Hawk Prime is assumed to have 6t of armor
 			$this->floatArmorTonnage = round($this->intArmor * 0.0004285714285714286 * 2) * 0.5;	
+		}
+		elseif ($objVehicle->getType() == 'LightVTOL')
+		{
+			// here the Hawkmoth Prime is assumed to have 5t of armor
+			$this->floatArmorTonnage = round($this->intArmor * 0.0002898718766305293 * 2) * 0.5;
+		}
+		elseif ($objVehicle->getType() == 'Hovercraft')
+		{
+			// here the Harrasser Prime is assumed to have 5t of armor
+			$this->floatArmorTonnage = round($this->intArmor * 0.0003322479898996611 * 2) * 0.5;
 		}
 		else
 		{
@@ -325,5 +339,13 @@ class Variant
 	public function getNickname()
 	{
 		return $this->strNickname;
+	}
+
+	/**
+	 * @return integer
+	 */
+	public function getFreeTons()
+	{
+		return $this->intFreeTons;
 	}
 }

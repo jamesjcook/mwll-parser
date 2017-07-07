@@ -133,10 +133,10 @@ class Prices
 		}
 
 		// search for class
-		$pattern = '/{(?:(?!}).)*class="'.$class.'".*?}/ms';
+		$pattern = '/[^-]{(?:(?!}).)*class="'.$class.'".*?}/ms';
 		if ($modification)
 		{
-			$pattern = '/{(?:(?!}).)*class="'.$class.'"(?:(?!}).)*modification="'.$modification.'".*?}/ms';
+			$pattern = '/[^-]{(?:(?!}).)*class="'.$class.'"(?:(?!}).)*modification="'.$modification.'".*?}/ms';
 		}
 
 		if (preg_match($pattern, $this->strContent, $matches))
@@ -149,7 +149,7 @@ class Prices
 		}
 
 		// search for id
-		$pattern = '/{(?:(?!}).)*id="'.$class.'".*?}/ms';
+		$pattern = '/[^-]{(?:(?!}).)*id="'.$class.'".*?}/ms';
 
 		if (preg_match($pattern, $this->strContent, $matches))
 		{

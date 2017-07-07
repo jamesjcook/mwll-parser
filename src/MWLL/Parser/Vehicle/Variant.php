@@ -70,6 +70,18 @@ class Variant
 	protected $strNickname;
 
 	/**
+	 * Maneuverability factor
+	 * @var float
+	 */
+	protected $floatManeuverabilityFactor;
+
+	/**
+	 * Side torso to center torso damage transfer ratio
+	 * @var float
+	 */
+	protected $floatTransferRatio;
+
+	/**
 	 * Equipment array
 	 * @var array
 	 */
@@ -110,6 +122,12 @@ class Variant
 
 		// inherit speed
 		$this->floatSpeed = $objVehicle->getSpeed();
+
+		// inherit maneuverability
+		$this->floatManeuverabilityFactor = $objVehicle->getManeuverabilityFactor();
+
+		// inherit XL vs regular Fusion
+		$this->floatTransferRatio = $objVehicle->getTransferRatio();
 
 		// go through each asset of the variant
 		foreach ($objVariant->Elems->Elem as $asset)
@@ -178,6 +196,16 @@ class Variant
 			elseif ($name == 'maxSpeed')
 			{
 				$this->floatSpeed = (float)$value * 3.6;
+			}
+			// maneuverability factor
+			elseif ($name == 'maneuverabilityFactor')
+			{
+				$this->floatManeuverabilityFactor = (float)$value;
+			}
+			// XL vs. Standard Fusion engine
+			elseif ($idref == 'idCompenentLeftTorsoProxyTransferDamage')
+			{
+				$this->floatTransferRatio = (float)$value;
 			}
 		}
 
@@ -366,5 +394,29 @@ class Variant
 	public function getTotalPrice()
 	{
 		return $this->intTotalPrice;
+	}
+
+	/**
+	 * @return float
+	 */
+	public function getManeuverabilityFactor()
+	{
+		return $this->floatManeuverabilityFactor;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function hasXL()
+	{
+		return $this->getTransferRatio() >= 1.66;
+	}
+
+	/**
+	 * @return float
+	 */
+	public function getTransferRatio()
+	{
+		return $this->floatTransferRatio;
 	}
 }

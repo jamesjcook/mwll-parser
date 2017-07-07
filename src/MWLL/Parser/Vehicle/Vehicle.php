@@ -21,16 +21,22 @@ class Vehicle
 	protected $arrVariants = array();
 
 	/**
-	 * Name of the vehicle
+	 * Internal name of the vehicle
 	 * @var string
 	 */
 	protected $strName;
 
 	/**
-	 * Whether this vehicle has XL engines
-	 * @var boolean
+	 * Display name of the vehicle
+	 * @var string
 	 */
-	protected $blnHasXL = false;
+	protected $strDisplayName;
+
+	/**
+	 * Side torso to center torso damage transfer ratio
+	 * @var float
+	 */
+	protected $floatTransferRatio;
 
 	/**
 	 * Tech
@@ -166,6 +172,12 @@ class Vehicle
 					$this->floatManeuverabilityFactor = floatval($objMovementParams['maneuverabilityFactor']);
 				}
 
+				// display name
+				if (isset($objMovementParams->DisplayName))
+				{
+					$this->strDisplayName = (string)$objMovementParams->DisplayName['value'];
+				}
+
 				break;
 			}
 		}
@@ -177,14 +189,11 @@ class Vehicle
 			{
 				if ((string)$component['name'] == 'lefttorso')
 				{
-					foreach ($component->ProxyTransferDamages as $damage)
+					foreach ($component->ProxyTransferDamages->ProxyTransferDamage as $damage)
 					{
 						if ((string)$damage['target'] == 'centertorso')
 						{
-							if ($damage['transferRatio'] > 1.0)
-							{
-								$this->blnHasXL = true;
-							}
+							$this->floatTransferRatio = (float)$damage['transferRatio'];
 							break;
 						}
 					}
@@ -374,5 +383,29 @@ class Vehicle
 	public function getManeuverabilityFactor()
 	{
 		return $this->floatManeuverabilityFactor;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getDisplayName()
+	{
+		return $this->strDisplayName ?: $this->getCommonName();
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function hasXL()
+	{
+		return $this->getTransferRatio() >= 1.66;
+	}
+
+	/**
+	 * @return float
+	 */
+	public function getTransferRatio()
+	{
+		return $this->floatTransferRatio;
 	}
 }

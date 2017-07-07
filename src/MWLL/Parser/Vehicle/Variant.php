@@ -79,7 +79,7 @@ class Variant
 	 * Ignore array
 	 * @var array
 	 */
-	protected static $arrIgnoreAssets = array('StandardOptics','LongRangeRadar','Radar');
+	protected static $arrIgnoreAssets = array('StandardOptics','LongRangeRadar','Radar','APCCannon_AscMod','SideWinder_AscMod','OnUsed');
 
 
 	/**
@@ -215,7 +215,18 @@ class Variant
 		}
 		foreach ($this->arrEquipment as $strClass => $count)
 		{
-			$this->intTotalPrice += Prices::price($strClass);
+			if ($strClass == 'HS')
+			{
+				$this->intTotalPrice += Prices::price('heatsinkCount') * $count;
+			}
+			elseif ($strClass == 'DHS')
+			{
+				$this->intTotalPrice += Prices::price('doubleHeatSinkCost') * $count;
+			}
+			else
+			{
+				$this->intTotalPrice += Prices::price($strClass) * $count;
+			}
 		}
 		$this->intTotalPrice += Prices::price('damageMax') * $this->intArmor;
 

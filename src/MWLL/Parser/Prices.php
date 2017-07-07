@@ -128,6 +128,7 @@ class Prices
 		// check if class exists at all
 		if (strpos($this->strContent, '"'.$class.'"') === false)
 		{
+			trigger_error('Could not find price for "'.$key.'".');
 			return 0;
 		}
 

@@ -68,6 +68,12 @@ class Vehicle
 	 */
 	protected $strVehicleClass;
 
+	/**
+	 * Maneuverability factor
+	 * @var float
+	 */
+	protected $floatManeuverabilityFactor;
+
 
 	/**
 	 * Constructor for Vehicle.
@@ -132,23 +138,32 @@ class Vehicle
 		{
 			if (isset($objXml->MovementParams[0]->{$strType}))
 			{
-				// tonnage
-				if (!$this->intTonnage && isset($objXml->MovementParams[0]->{$strType}['tonnage']))
-				{
-					$this->intTonnage = (int)$objXml->MovementParams[0]->{$strType}['tonnage'];
-				}
+				// get the movement params
+				$objMovementParams = $objXml->MovementParams[0]->{$strType};
 
 				// type
 				$this->strType = $strType;
 
-				// speed (convert from m/s to kph)
-				if (isset($objXml->MovementParams[0]->{$strType}['maxSpeed']))
+				// tonnage
+				if (!$this->intTonnage && isset($objMovementParams['tonnage']))
 				{
-					$this->floatSpeed = floatval($objXml->MovementParams[0]->{$strType}['maxSpeed']) * 3.6;
+					$this->intTonnage = (int)$objMovementParams['tonnage'];
 				}
-				if (isset($objXml->MovementParams[0]->{$strType}['actualMaxSpeed']))
+
+				// speed (convert from m/s to kph)
+				if (isset($objMovementParams['maxSpeed']))
 				{
-					$this->floatSpeed = floatval($objXml->MovementParams[0]->{$strType}['actualMaxSpeed']) * 3.6;
+					$this->floatSpeed = floatval($objMovementParams['maxSpeed']) * 3.6;
+				}
+				if (isset($objMovementParams['actualMaxSpeed']))
+				{
+					$this->floatSpeed = floatval($objMovementParams['actualMaxSpeed']) * 3.6;
+				}
+
+				// maneuverability factor
+				if (isset($objMovementParams['maneuverabilityFactor']))
+				{
+					$this->floatManeuverabilityFactor = floatval($objMovementParams['maneuverabilityFactor']);
 				}
 
 				break;
@@ -351,5 +366,13 @@ class Vehicle
 	public function getTonnage()
 	{
 		return $this->intTonnage;
+	}
+
+	/**
+	 * @return float
+	 */
+	public function getManeuverabilityFactor()
+	{
+		return $this->floatManeuverabilityFactor;
 	}
 }

@@ -348,4 +348,12 @@ class Variant
 	{
 		return $this->intFreeTons;
 	}
+
+	/**
+	 * @return integer
+	 */
+	public function getTotalPrice()
+	{
+		return $this->intTotalPrice;
+	}
 }

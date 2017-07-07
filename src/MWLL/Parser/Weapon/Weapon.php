@@ -19,6 +19,12 @@ class Weapon
 	 */
 	protected $strWeaponName;
 
+	/**
+	 * Weapon range (HUD)
+	 * @var integer
+	 */
+	protected $intRange;
+
 
 	/**
 	 * Constructor for Vehicle.
@@ -42,6 +48,21 @@ class Weapon
 		if (isset($objXml['name']))
 		{
 			$this->strName = (string)$objXml['name'];
+		}
+
+		// parse weapon params
+		if (isset($objXml->params->param))
+		{
+			foreach ($objXml->params->param as $param)
+			{
+				$name = (string)$param['name'];
+				$value = (string)$param['value'];
+				
+				if ($name == 'range')
+				{
+					$this->intRange = (int)$value;
+				}
+			}
 		}
 
 		// parse weapon group data
@@ -79,5 +100,13 @@ class Weapon
 	public function getWeaponName()
 	{
 		return $this->strWeaponName ?: $this->strName;
+	}
+
+	/**
+	 * @return integer
+	 */
+	public function getRange()
+	{
+		return $this->intRange;
 	}
 }

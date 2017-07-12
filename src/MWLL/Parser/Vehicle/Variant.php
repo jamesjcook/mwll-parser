@@ -91,7 +91,7 @@ class Variant
 	 * Ignore array
 	 * @var array
 	 */
-	protected static $arrIgnoreAssets = array('StandardOptics','LongRangeRadar','Radar','APCCannon_AscMod','SideWinder_AscMod','OnUsed');
+	protected static $arrIgnoreAssets = array('StandardOptics','LongRangeRadar','Radar','APCCannon_AscMod','SideWinder_AscMod','OnUsed','fire');
 
 
 	/**

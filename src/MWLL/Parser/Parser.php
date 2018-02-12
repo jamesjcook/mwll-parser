@@ -100,6 +100,25 @@ class Parser
 			}
 		}
 
+		// define the folder to the additional weapon XMLs
+		$strWeaponFolder = $strGameDataFolder . '/Scripts/Entities/Items/XML/Weapons';
+
+		// check if folder exists
+		if (!file_exists($strWeaponFolder))
+		{
+			throw new \RuntimeException('Folder '. $strWeaponFolder . ' does not exist.');
+		}
+
+		// go through each XML
+		foreach (new \DirectoryIterator($strWeaponFolder) as $fileInfo)
+		{
+			if ($fileInfo->getExtension() == 'xml')
+			{
+				$objWeapon = new Weapon($fileInfo->getPathname());
+				self::$arrWeapons[$objWeapon->getName()] = $objWeapon;
+			}
+		}
+
 		// sort
 		ksort(self::$arrWeapons);
 	}

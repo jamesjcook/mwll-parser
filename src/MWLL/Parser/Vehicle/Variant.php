@@ -349,6 +349,14 @@ class Variant
 	}
 
 	/**
+	 * @return boolean
+	 */
+	public function hasStealthGECM()
+	{
+		return in_array('StealthGECM', array_keys($this->arrEquipment));
+	}
+
+	/**
 	 * @return float
 	 */
 	public function getSpeed()

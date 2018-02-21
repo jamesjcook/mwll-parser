@@ -155,28 +155,14 @@ class Variant
 				$this->intFreeTons = (int)$value;
 			}
 			// equipment
-			elseif ($name == 'type' || in_array($value,  self::$arrEquipmentAssets))
+			elseif ($name == 'type' || in_array($value,  self::$arrEquipmentAssets) || $value == 'RearFiringLaser')
 			{
-				if (isset($this->arrEquipment[$value]))
-				{
-					++$this->arrEquipment[$value];
-				}
-				else
-				{
-					$this->arrEquipment[$value] = 1;
-				}
+				$this->addEquipment($value);
 			}
 			// weapon
 			elseif ($name == 'class')
 			{
-				if (isset($this->arrWeapons[$value]))
-				{
-					++$this->arrWeapons[$value];
-				}
-				else
-				{
-					$this->arrWeapons[$value] = 1;
-				}
+				$this->addWeapon($value);
 			}
 			// armor
 			elseif ($name == 'damageMax')
@@ -292,6 +278,40 @@ class Variant
 		}
 	}
 
+
+	/**
+	 * Adds an equipment entry.
+	 *
+	 * @param  string $strEquipment
+	 */
+	public function addEquipment($strEquipment)
+	{
+		if (isset($this->arrEquipment[$strEquipment]))
+		{
+			++$this->arrEquipment[$strEquipment];
+		}
+		else
+		{
+			$this->arrEquipment[$strEquipment] = 1;
+		}
+	}
+
+	/**
+	 * Adds a weapon entry.
+	 *
+	 * @param  string $strEquipment
+	 */
+	public function addWeapon($strWeapon)
+	{
+		if (isset($this->arrWeapons[$strWeapon]))
+		{
+			++$this->arrWeapons[$strWeapon];
+		}
+		else
+		{
+			$this->arrWeapons[$strWeapon] = 1;
+		}
+	}
 
 	/**
 	 * @return string

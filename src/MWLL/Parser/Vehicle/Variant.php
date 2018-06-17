@@ -303,6 +303,9 @@ class Variant
 	 */
 	public function addWeapon($strWeapon)
 	{
+		// remove "_Rot"
+		$strWeapon = str_replace('_Rot', '', $strWeapon);
+
 		if (isset($this->arrWeapons[$strWeapon]))
 		{
 			++$this->arrWeapons[$strWeapon];

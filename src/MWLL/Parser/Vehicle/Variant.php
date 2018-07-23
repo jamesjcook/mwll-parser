@@ -85,7 +85,7 @@ class Variant
 	 * Equipment array
 	 * @var array
 	 */
-	protected static $arrEquipmentAssets = array('EnhancedOptics','AntiMissileSystem');
+	protected static $arrEquipmentAssets = array('EnhancedOptics','AntiMissileSystem','PointDefenseSystem','RearFiringLaser');
 
 	/**
 	 * Ignore array
@@ -155,7 +155,7 @@ class Variant
 				$this->intFreeTons = (int)$value;
 			}
 			// equipment
-			elseif ($name == 'type' || in_array($value,  self::$arrEquipmentAssets) || $value == 'RearFiringLaser')
+			elseif ($name == 'type' || in_array($value,  self::$arrEquipmentAssets))
 			{
 				$this->addEquipment($value);
 			}

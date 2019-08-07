@@ -33,6 +33,12 @@ class Parser
 	 */
 	protected static $arrWeapons = array();
 
+	/**
+	 * Ticket costs
+	 * @var array
+	 */
+	protected static $ticketCosts = [];
+
 
 	/**
 	 * Parses the extracted GameData folder
@@ -49,6 +55,12 @@ class Parser
 
 		// generate the prices instance
 		Prices::init($strMechListsPath);
+
+		// parse TeamSolarisArenaTickets.lua
+		$ticketsLuaPath = $strGameDataFolder . '/Scripts/GameRules/TeamSolarisArenaTickets.lua';
+		$parser = new LuaParser();
+		$parser->parseFile($ticketsLuaPath);
+		self::$ticketCosts = $parser->data['TeamSolarisArena.ticketDecrementList'];
 
 		// define the folder to the vehicle XMLs
 		$strVehicleFolder = $strGameDataFolder . '/Scripts/Entities/Vehicles/Implementations/Xml';
@@ -154,5 +166,16 @@ class Parser
 	public static function getWeapons()
 	{
 		return self::$arrWeapons;
+	}
+
+
+	/**
+	 * Returns the ticket list
+	 * 
+	 * @return array
+	 */
+	public static function getTicketCosts()
+	{
+		return self::$ticketCosts;
 	}
 }

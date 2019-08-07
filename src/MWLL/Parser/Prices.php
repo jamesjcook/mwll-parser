@@ -2,8 +2,6 @@
 
 namespace MWLL\Parser;
 
-use Symfony\Component\VarDumper\VarDumper;
-
 class Prices
 {
 	/**

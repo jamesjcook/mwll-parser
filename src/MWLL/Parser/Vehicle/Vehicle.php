@@ -80,6 +80,12 @@ class Vehicle
 	 */
 	protected $floatManeuverabilityFactor;
 
+	/**
+	 * Ticket cost
+	 * @var int
+	 */
+	protected $ticketCost;
+
 
 	/**
 	 * Constructor for Vehicle.
@@ -220,6 +226,13 @@ class Vehicle
 				$objVariant = new Variant($this, $modification, $objXml, $this->objBaseVariant);
 				$this->arrVariants[$objVariant->getName()] = $objVariant;
 			}
+		}
+
+		// get tickets
+		$ticketCosts = Parser::getTicketCosts();
+
+		if (isset($ticketCosts[$this->getName()])) {
+			$this->ticketCost = $ticketCosts[$this->getName()];
 		}
 	}
 
@@ -407,5 +420,13 @@ class Vehicle
 	public function getTransferRatio()
 	{
 		return $this->floatTransferRatio;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getTicketCost()
+	{
+		return $this->ticketCost;
 	}
 }

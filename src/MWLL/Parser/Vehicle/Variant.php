@@ -79,13 +79,19 @@ class Variant
 	 * Side torso to center torso damage transfer ratio
 	 * @var float
 	 */
-	protected $floatTransferRatio;
+	protected $sideTransferRatio;
+
+	/**
+	 * BAck torso to center torso damage transfer ratio
+	 * @var float
+	 */
+	protected $backTransferRatio;
 
 	/**
 	 * Equipment array
 	 * @var array
 	 */
-	protected static $arrEquipmentAssets = array('EnhancedOptics','AntiMissileSystem','PointDefenseSystem','RearFiringLaser');
+	protected static $arrEquipmentAssets = array('EnhancedOptics','AntiMissileSystem','PointDefenseSystem','RearFiringLaser','AutoFlamer');
 
 	/**
 	 * Ignore array
@@ -126,8 +132,9 @@ class Variant
 		// inherit maneuverability
 		$this->floatManeuverabilityFactor = $objVehicle->getManeuverabilityFactor();
 
-		// inherit XL vs regular Fusion
-		$this->floatTransferRatio = $objVehicle->getTransferRatio();
+		// inherit transfer ratios
+		$this->sideTransferRatio = $objVehicle->getSideTransferRatio();
+		$this->backTransferRatio = $objVehicle->getBackTransferRatio();
 
 		// go through each asset of the variant
 		foreach ($objVariant->Elems->Elem as $asset)
@@ -188,10 +195,13 @@ class Variant
 			{
 				$this->floatManeuverabilityFactor = (float)$value;
 			}
-			// XL vs. Standard Fusion engine
-			elseif ($idref == 'idCompenentLeftTorsoProxyTransferDamage')
-			{
-				$this->floatTransferRatio = (float)$value;
+			// Left to center torso transfer ratio
+			elseif ($idref == 'idCompenentLeftTorsoProxyTransferDamage') {
+				$this->sideTransferRatio = (float) $value;
+			}
+			// BAck to center torso transfer ratio
+			elseif ($idref == 'idCompenentBackTorsoProxyTransferDamage') {
+				$this->backTransferRatio = (float) $value;
 			}
 		}
 
@@ -436,18 +446,28 @@ class Variant
 	}
 
 	/**
-	 * @return boolean
+	 * Returns whether or not this variant has an XL fusion engine.
 	 */
-	public function hasXL()
+	public function hasXL(): bool
 	{
-		return $this->getTransferRatio() >= 1.66;
+		return $this->getSideTransferRatio() >= 1.65;
 	}
 
 	/**
-	 * @return float
+	 * Returns whether or not this variant has a compact fusion engine.
 	 */
-	public function getTransferRatio()
+	public function hasCompact(): bool
 	{
-		return $this->floatTransferRatio;
+		return $this->getSideTransferRatio() <= 0.67 && $this->getBackTransferRatio() <= 1.01;
+	}
+
+	public function getSideTransferRatio(): ?float
+	{
+		return $this->sideTransferRatio;
+	}
+
+	public function getBackTransferRatio(): ?float
+	{
+		return $this->backTransferRatio;
 	}
 }

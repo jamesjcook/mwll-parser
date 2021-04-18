@@ -36,7 +36,13 @@ class Vehicle
 	 * Side torso to center torso damage transfer ratio
 	 * @var float
 	 */
-	protected $floatTransferRatio;
+	protected $sideTransferRatio;
+
+	/**
+	 * Back torso to center torso damage transfer ratio
+	 * @var float
+	 */
+	protected $backTransferRatio;
 
 	/**
 	 * Tech
@@ -189,20 +195,27 @@ class Vehicle
 		}
 
 		// check for XL engine
-		if (isset($objXml->MovementParams[0]->Mech->Components))
-		{
-			foreach ($objXml->MovementParams[0]->Mech->Components->Component as $component)
-			{
-				if ((string)$component['name'] == 'lefttorso')
-				{
-					foreach ($component->ProxyTransferDamages->ProxyTransferDamage as $damage)
-					{
-						if ((string)$damage['target'] == 'centertorso')
-						{
-							$this->floatTransferRatio = (float)$damage['transferRatio'];
+		if (isset($objXml->MovementParams[0]->Mech->Components)) {
+			foreach ($objXml->MovementParams[0]->Mech->Components->Component as $component) {
+				if ('lefttorso' === (string) $component['name']) {
+					foreach ($component->ProxyTransferDamages->ProxyTransferDamage as $damage) {
+						if ('centertorso' === (string) $damage['target']) {
+							$this->sideTransferRatio = (float) $damage['transferRatio'];
 							break;
 						}
 					}
+				}
+
+				if ('backtorso' === (string) $component['name']) {
+					foreach ($component->ProxyTransferDamages->ProxyTransferDamage as $damage) {
+						if ('centertorso' === (string) $damage['target']) {
+							$this->backTransferRatio = (float) $damage['transferRatio'];
+							break;
+						}
+					}
+				}
+
+				if (null !== $this->sideTransferRatio && null !== $this->backTransferRatio) {
 					break;
 				}
 			}
@@ -411,15 +424,17 @@ class Vehicle
 	 */
 	public function hasXL()
 	{
-		return $this->getTransferRatio() >= 1.66;
+		return $this->getSideTransferRatio() >= 1.66;
 	}
 
-	/**
-	 * @return float
-	 */
-	public function getTransferRatio()
+	public function getSideTransferRatio(): ?float
 	{
-		return $this->floatTransferRatio;
+		return $this->sideTransferRatio;
+	}
+
+	public function getBackTransferRatio(): ?float
+	{
+		return $this->backTransferRatio;
 	}
 
 	/**

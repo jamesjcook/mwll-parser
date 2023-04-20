@@ -19,7 +19,7 @@ class Parser
 	 * Vehicle types
 	 * @var array
 	 */
-	protected static $arrIgnoreVehicles = array('IS_Karnov');
+	protected static $arrIgnoreVehicles = array();
 
 	/**
 	 * Vehicles
